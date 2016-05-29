@@ -1,6 +1,7 @@
 package command
 
 import (
+	"os"
 	"strings"
 )
 
@@ -11,16 +12,38 @@ type InitCommand struct {
 func (c *InitCommand) Run(args []string) int {
 	// Write your code here
 
+	if err := os.Mkdir(".spaceship", 0755); err != nil {
+		c.Ui.Error("Failed initialization: " + err.Error())
+		return 1
+	}
+	if err := os.Mkdir("artifact", 0755); err != nil {
+		c.Ui.Error("Failed initialization: " + err.Error())
+		return 1
+	}
+	if err := os.Mkdir("template", 0755); err != nil {
+		c.Ui.Error("Failed initialization: " + err.Error())
+		return 1
+	}
+	if err := os.Mkdir("infra", 0755); err != nil {
+		c.Ui.Error("Failed initialization: " + err.Error())
+		return 1
+	}
+	if err := os.Mkdir("strategy", 0755); err != nil {
+		c.Ui.Error("Failed initialization: " + err.Error())
+		return 1
+	}
+	c.Ui.Output("Initialized empty spaceship project!")
+
 	return 0
 }
 
 func (c *InitCommand) Synopsis() string {
-	return ""
+	return "Initialize spaceship project"
 }
 
 func (c *InitCommand) Help() string {
 	helpText := `
-
+Initialize spaceship project
 `
 	return strings.TrimSpace(helpText)
 }

@@ -20,7 +20,7 @@ func (c *ApplyCommand) Run(args []string) int {
 	terraform := &client.Terraform{
 		Dir: pwd + "/infra",
 		Artifact: packer.Artifact{
-			Dir: pwd + "/artifact",
+			Dir: pwd + "/.spaceship",
 		},
 		Ui: vui.Ui{},
 	}

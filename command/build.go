@@ -20,8 +20,12 @@ func (c *BuildCommand) Run(args []string) int {
 		Dir:      pwd + "/template",
 		Varfile:  "variables.json",
 		Template: "template.json",
-		Ui:       vui.Ui{},
+		Artifact: client.Artifact{
+			Dir: pwd + "/.spaceship",
+		},
+		Ui: vui.Ui{},
 	}
+	packer.Artifact.Init()
 
 	c.Ui.Output("Building Artifact...")
 	if err := packer.Build(); err != nil {

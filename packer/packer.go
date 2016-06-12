@@ -18,6 +18,8 @@ type Packer struct {
 
 func (p *Packer) Build() error {
 	packer_r, packer_w := io.Pipe()
+	pwd, _ := os.Getwd()
+	p.Artifact.Dir = pwd + "/artifact"
 
 	reader := make(chan bool)
 	go func() {

@@ -27,7 +27,9 @@ func (c *BuildCommand) Run(args []string) int {
 	if err := packer.Build(); err != nil {
 		c.Ui.Error("Failed packer build: " + err.Error())
 	}
-	c.Ui.Output(packer.Artifact.Output())
+	if err := packer.Artifact.Save(); err != nil {
+		c.Ui.Error("Failed save artifact: " + err.Error())
+	}
 	packer.Ui.Flush()
 
 	return 0

@@ -2,6 +2,7 @@ package packer
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -31,5 +32,25 @@ func (a *Artifact) Save() error {
 		return err
 	}
 	ioutil.WriteFile(artifact_file, artifact_body, os.ModePerm)
+	return nil
+}
+
+func (a *Artifact) Parse(workdir string) error {
+	artifact_file := a.Dir + "/artifact.json"
+	variables_file := workdir + "/spaceship_variables.tf"
+	artifact_body, err := ioutil.ReadFile(artifact_file)
+	if err != nil {
+		return err
+	}
+
+	json.Unmarshal(artifact_body, &a)
+
+	var tfvars_body = fmt.Sprintf(`
+variable "%s" {
+    default = "%s"
+}
+`, "spaceship_artifact", a.Name)
+	ioutil.WriteFile(variables_file, []byte(tfvars_body), os.ModePerm)
+
 	return nil
 }

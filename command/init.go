@@ -1,6 +1,8 @@
 package command
 
 import (
+	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -32,6 +34,11 @@ func (c *InitCommand) Run(args []string) int {
 		c.Ui.Error("Failed initialization: " + err.Error())
 		return 1
 	}
+	var git_ignore = fmt.Sprintf(`
+/infra/spaceship-variables.tf
+`)
+	ioutil.WriteFile(".gitignore", []byte(git_ignore), os.ModePerm)
+
 	c.Ui.Output("Initialized empty spaceship project!")
 
 	return 0

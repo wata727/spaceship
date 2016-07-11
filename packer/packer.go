@@ -19,7 +19,7 @@ type Packer struct {
 func (p *Packer) Build() error {
 	packer_r, packer_w := io.Pipe()
 
-	reader := make(chan bool)
+	reader := make(chan error)
 	go func() {
 		defer close(reader)
 		var buf [1024]byte
@@ -30,9 +30,12 @@ func (p *Packer) Build() error {
 			}
 			if n > 0 {
 				p.Ui.Output(string(buf[:n]))
-				p.Artifact.Detect(string(buf[:n]))
+				if err := p.Artifact.Detect(string(buf[:n])); err != nil {
+					reader <- err
+				}
 			}
 		}
+		reader <- nil
 	}()
 
 	packer_arg := []string{"build"}
@@ -50,9 +53,12 @@ func (p *Packer) Build() error {
 
 	err := cmd.Run()
 	packer_w.Close()
-	<-reader
+	err_chan := <-reader
 	if err != nil {
 		return err
+	}
+	if err_chan != nil {
+		return err_chan
 	}
 
 	return nil
